@@ -25,11 +25,20 @@ const Search = () => {
     window.scrollTo(0, 0);
   }, [searchQuery]);
   
+  // Function to decode HTML entities
+  const decodeHtmlEntities = (text: string) => {
+    const textArea = document.createElement('textarea');
+    textArea.innerHTML = text;
+    return textArea.value;
+  };
+  
+  const decodedSearchQuery = decodeHtmlEntities(searchQuery);
+  
   return (
     <main className="min-h-screen">
       <section className="page-container max-w-6xl">
         <div className="text-center mb-8 md:mb-12">
-          <h1 className="mb-4">Resultados para "{searchQuery}"</h1>
+          <h1 className="mb-4">Resultados para "{decodedSearchQuery}"</h1>
           {!isLoading && (
             <p className="text-fashion-secondary">
               {totalPosts} {totalPosts === 1 ? 'resultado encontrado' : 'resultados encontrados'}

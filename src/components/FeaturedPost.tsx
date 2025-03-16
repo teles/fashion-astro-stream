@@ -4,6 +4,13 @@ import { WpPost, WpCategory } from '../types';
 import { formatDate, getPostImage, getExcerpt } from '../services/api';
 import CategoryChip from './CategoryChip';
 
+// Function to decode HTML entities
+const decodeHtmlEntities = (text: string) => {
+  const textArea = document.createElement('textarea');
+  textArea.innerHTML = text;
+  return textArea.value;
+};
+
 interface FeaturedPostProps {
   post: WpPost;
   className?: string;
@@ -19,7 +26,7 @@ const FeaturedPost = ({ post, className = '' }: FeaturedPostProps) => {
       <div className="relative after:absolute after:inset-0 after:bg-gradient-to-t after:from-black/60 after:to-transparent">
         <img 
           src={imageUrl} 
-          alt={post.title.rendered} 
+          alt={decodeHtmlEntities(post.title.rendered)} 
           className="w-full h-[70vh] object-cover animate-image-scale"
         />
       </div>

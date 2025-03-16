@@ -4,6 +4,13 @@ import { WpPost, WpCategory } from '../types';
 import { formatDate, getPostImage, getExcerpt } from '../services/api';
 import CategoryChip from './CategoryChip';
 
+// Function to decode HTML entities
+const decodeHtmlEntities = (text: string) => {
+  const textArea = document.createElement('textarea');
+  textArea.innerHTML = text;
+  return textArea.value;
+};
+
 interface PostCardProps {
   post: WpPost;
   categories?: WpCategory[];
@@ -23,7 +30,7 @@ const PostCard = ({ post, categories, variant = 'normal', className = '' }: Post
           <div className="image-hover-zoom mb-3">
             <img 
               src={imageUrl} 
-              alt={post.title.rendered} 
+              alt={decodeHtmlEntities(post.title.rendered)} 
               className="aspect-square object-cover w-full"
               loading="lazy"
             />
@@ -41,7 +48,7 @@ const PostCard = ({ post, categories, variant = 'normal', className = '' }: Post
         <Link to={`/post/${post.slug}`} className="block image-hover-zoom">
           <img 
             src={imageUrl} 
-            alt={post.title.rendered} 
+            alt={decodeHtmlEntities(post.title.rendered)} 
             className="aspect-[4/3] md:aspect-square object-cover w-full h-full"
             loading="lazy"
           />
@@ -67,7 +74,7 @@ const PostCard = ({ post, categories, variant = 'normal', className = '' }: Post
         <div className="image-hover-zoom mb-4">
           <img 
             src={imageUrl} 
-            alt={post.title.rendered} 
+            alt={decodeHtmlEntities(post.title.rendered)} 
             className="aspect-[4/3] object-cover w-full"
             loading="lazy"
           />
