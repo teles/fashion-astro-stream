@@ -32,14 +32,25 @@ const Post = () => {
     window.scrollTo(0, 0);
   }, [slug]);
   
+  // Function to decode HTML entities
+  const decodeHtmlEntities = (text: string) => {
+    const textArea = document.createElement('textarea');
+    textArea.innerHTML = text;
+    return textArea.value;
+  };
+  
   if (isLoading) {
     return (
       <div className="page-container">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-fashion-lightGray rounded w-3/4" />
-          <div className="h-96 bg-fashion-lightGray rounded" />
-          <div className="space-y-2">
-            <div className="h-4 bg-fashion-lightGray rounded w-1/4" />
+        <div className="animate-pulse space-y-4 max-w-4xl mx-auto">
+          <div className="h-8 bg-fashion-lightGray rounded w-3/4 mx-auto mb-8" />
+          <div className="h-4 bg-fashion-lightGray rounded w-1/4 mx-auto mb-12" />
+          <div className="h-96 bg-fashion-lightGray rounded mb-12" />
+          <div className="space-y-4 max-w-3xl mx-auto">
+            <div className="h-4 bg-fashion-lightGray rounded" />
+            <div className="h-4 bg-fashion-lightGray rounded" />
+            <div className="h-4 bg-fashion-lightGray rounded w-4/5" />
+            <div className="h-12 bg-fashion-lightGray rounded mt-8" />
             <div className="h-4 bg-fashion-lightGray rounded" />
             <div className="h-4 bg-fashion-lightGray rounded" />
           </div>
@@ -56,6 +67,8 @@ const Post = () => {
       </div>
     );
   }
+  
+  const postTitle = decodeHtmlEntities(post.title.rendered);
   
   return (
     <main className="min-h-screen">
@@ -80,7 +93,7 @@ const Post = () => {
           <figure className="mt-8 mb-12">
             <img 
               src={imageUrl} 
-              alt={post.title.rendered}
+              alt={postTitle}
               className="w-full max-h-[70vh] object-cover"
             />
           </figure>

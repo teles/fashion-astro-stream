@@ -148,6 +148,38 @@
     @apply text-fashion-primary underline decoration-1 underline-offset-2 hover:decoration-2 transition-all;
   }
   
+  /* Recipe styling */
+  .post-content .wp-block-group {
+    @apply my-8 p-6 bg-fashion-beige rounded-md shadow-sm;
+  }
+  
+  .post-content .ingredients-list {
+    @apply my-4 pl-5;
+  }
+  
+  .post-content .ingredients-list li {
+    @apply list-disc my-2;
+  }
+  
+  .post-content .wp-block-heading + ul,
+  .post-content h3 + ul,
+  .post-content h4 + ul {
+    @apply bg-fashion-cream p-4 rounded-md border border-fashion-sand;
+  }
+  
+  .post-content .wp-block-embed,
+  .post-content .wp-block-image {
+    @apply my-8;
+  }
+  
+  .post-content .has-text-align-center {
+    @apply text-center;
+  }
+  
+  .post-content blockquote {
+    @apply pl-4 border-l-4 border-fashion-primary/30 italic my-6;
+  }
+  
   .category-chip {
     @apply inline-block text-xs uppercase tracking-wide px-3 py-1 rounded-full border border-fashion-lightGray bg-white text-fashion-secondary font-medium transition-all hover:bg-fashion-accent;
   }
