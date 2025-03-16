@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import Index from "./pages/Index";
 import Post from "./pages/Post";
 import Category from "./pages/Category";
+import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/post/:slug" element={<Post />} />
             <Route path="/categoria/:slug" element={<Category />} />
+            <Route path="/search" element={<Search />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <Footer />

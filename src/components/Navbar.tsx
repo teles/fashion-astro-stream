@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { fetchCategories } from '../services/api';
 import { WpCategory } from '../types';
 import { Menu, Search, X } from 'lucide-react';
@@ -12,6 +12,7 @@ const Navbar = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -40,7 +41,8 @@ const Navbar = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      window.location.href = `/search?q=${encodeURIComponent(searchTerm)}`;
+      navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
+      setIsSearchOpen(false);
     }
   };
 
