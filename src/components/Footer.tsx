@@ -17,7 +17,7 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer className="bg-fashion-beige mt-auto">
+    <footer className="bg-fashion-beige dark:bg-black mt-auto">
       <div className="container mx-auto px-4 py-12 md:py-16">
         <div className="grid md:grid-cols-3 gap-8 md:gap-12">
           <div>

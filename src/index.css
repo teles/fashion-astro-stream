@@ -129,8 +129,12 @@
     text-wrap: balance;
   }
   
+  .post-content figure {
+    @apply max-w-full;
+  }
+
   .post-content img {
-    @apply my-6 rounded-md shadow-sm;
+    @apply my-6 rounded-md shadow-sm max-w-full;
   }
   
   .post-content p {
