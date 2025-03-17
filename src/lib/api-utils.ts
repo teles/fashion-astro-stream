@@ -1,5 +1,6 @@
 
 import { WpPost } from '@/types';
+import { getExcerpt } from './utils';
 
 /**
  * Gets the post image URL based on the requested size
