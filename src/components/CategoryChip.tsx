@@ -11,7 +11,7 @@ interface CategoryChipProps {
 
 const CategoryChip = ({ category, className = '', onClick }: CategoryChipProps) => {
   const decodedCategoryName = decodeHtmlEntities(category.name);
-  const baseClasses = `inline-block px-3 py-1 text-xs font-medium rounded-full bg-fashion-primary/10 text-fashion-primary hover:bg-fashion-primary/20 transition-colors ${className}`;
+  const baseClasses = `inline-block px-3 py-1 text-xs font-medium rounded-full bg-fashion-primary/10 text-fashion-primary hover:bg-fashion-primary/20 transition-colors dark:text-white ${className}`;
   
   if (onClick) {
     return (
