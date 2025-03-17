@@ -5,16 +5,17 @@ import { Search, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { useMobile } from '@/hooks/use-mobile';
+import { useIsMobile } from '@/hooks/use-mobile';  // Fixed import name
 import { useCategories } from '@/hooks/use-category';
 import ThemeToggle from '@/components/ThemeToggle';
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const isMobile = useMobile();
+  const isMobile = useIsMobile();  // Fixed hook usage
   const [searchQuery, setSearchQuery] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
-  const { categories } = useCategories();
+  const categoriesQuery = useCategories();  // Store the full query result
+  const categories = categoriesQuery.data || [];  // Access data property safely
   
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
