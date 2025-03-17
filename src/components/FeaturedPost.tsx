@@ -24,6 +24,8 @@ const FeaturedPost = ({ post, className = '' }: FeaturedPostProps) => {
           src={imageUrl} 
           alt={postTitle} 
           className="w-full h-[70vh] object-cover animate-image-scale"
+          loading="lazy"
+          decoding="async"
         />
       </div>
       
@@ -31,7 +33,7 @@ const FeaturedPost = ({ post, className = '' }: FeaturedPostProps) => {
         {primaryCategory && (
           <CategoryChip 
             category={primaryCategory} 
-            className="bg-white/90 backdrop-blur-sm mb-4" 
+            className="bg-white/90 backdrop-blur-sm mb-4 dark:bg-black/70" 
           />
         )}
         

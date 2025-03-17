@@ -1,195 +1,148 @@
 
-import { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { fetchCategories } from '../services/api';
-import { WpCategory } from '../types';
-import { Menu, Search, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Search, Menu, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useMobile } from '@/hooks/use-mobile';
+import { useCategories } from '@/hooks/use-category';
+import ThemeToggle from '@/components/ThemeToggle';
 
 const Navbar = () => {
-  const [categories, setCategories] = useState<WpCategory[]>([]);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isScrolled, setIsScrolled] = useState(false);
-  const location = useLocation();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const loadCategories = async () => {
-      const data = await fetchCategories();
-      // Only take categories with posts
-      setCategories(data.filter(cat => cat.count && cat.count > 0).slice(0, 5));
-    };
-    
-    loadCategories();
-  }, []);
-
-  useEffect(() => {
-    setIsMenuOpen(false);
-    setIsSearchOpen(false);
-  }, [location.pathname]);
-
+  const isMobile = useMobile();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isScrolled, setIsScrolled] = useState(false);
+  const { categories } = useCategories();
+  
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+  
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      setIsScrolled(window.scrollY > 50);
     };
     
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchTerm.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
-      setIsSearchOpen(false);
-    }
-  };
-
+  
   return (
-    <header className={`sticky top-0 w-full z-50 transition-all duration-300 ${
-      isScrolled ? 'py-3 bg-white/90 backdrop-blur-md shadow-sm' : 'py-5 bg-transparent'
-    }`}>
-      <div className="container px-4 mx-auto flex justify-between items-center">
-        <Link 
-          to="/" 
-          className="text-2xl font-serif font-medium tracking-tight hover:opacity-80 transition-opacity"
-        >
+    <header 
+      className={`sticky top-0 z-40 w-full transition-all duration-200 ${
+        isScrolled 
+          ? 'bg-white/90 backdrop-blur-md shadow-sm dark:bg-gray-900/90' 
+          : 'bg-transparent'
+      }`}
+    >
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+        <Link to="/" className="text-xl font-serif font-medium">
           Se A Moda Pega
         </Link>
         
-        <nav className="hidden md:flex items-center space-x-6">
-          <Link to="/" className="text-sm uppercase tracking-wide hover:text-fashion-secondary transition-colors">
-            Home
-          </Link>
-          
-          {categories.map(category => (
-            <Link
-              key={category.id}
-              to={`/categoria/${category.slug}`}
-              className="text-sm uppercase tracking-wide hover:text-fashion-secondary transition-colors"
-            >
-              {category.name}
+        {!isMobile && (
+          <nav className="hidden md:flex items-center space-x-6">
+            <Link to="/" className="text-sm font-medium hover:text-fashion-secondary transition-colors">
+              Início
             </Link>
-          ))}
-          
-          <button 
-            onClick={() => setIsSearchOpen(true)}
-            className="text-sm flex items-center hover:text-fashion-secondary transition-colors"
-            aria-label="Pesquisar"
-          >
-            <Search size={18} />
-          </button>
-        </nav>
+            {categories.slice(0, 5).map(category => (
+              <Link 
+                key={category.id}
+                to={`/categoria/${category.slug}`}
+                className="text-sm font-medium hover:text-fashion-secondary transition-colors"
+              >
+                {category.name}
+              </Link>
+            ))}
+          </nav>
+        )}
         
-        <div className="md:hidden flex items-center space-x-4">
-          <button 
-            onClick={() => setIsSearchOpen(true)}
-            className="hover:text-fashion-secondary transition-colors"
-            aria-label="Pesquisar"
-          >
-            <Search size={20} />
-          </button>
+        <div className="flex items-center space-x-2">
+          {!isMobile && (
+            <form onSubmit={handleSearch} className="relative mr-2">
+              <Input
+                type="search"
+                placeholder="Pesquisar..."
+                className="w-[200px] h-9 pl-2 pr-8"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                aria-label="Pesquisar no blog"
+              />
+              <Button 
+                type="submit" 
+                size="icon" 
+                variant="ghost" 
+                className="absolute right-0 top-0 h-full px-2"
+                aria-label="Buscar"
+              >
+                <Search className="h-4 w-4" />
+              </Button>
+            </form>
+          )}
           
-          <button 
-            onClick={() => setIsMenuOpen(true)}
-            className="hover:text-fashion-secondary transition-colors"
-            aria-label="Menu"
-          >
-            <Menu size={24} />
-          </button>
+          <ThemeToggle />
+          
+          {isMobile && (
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" aria-label="Menu">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[80vw] sm:w-[385px]">
+                <div className="flex flex-col h-full">
+                  <div className="flex items-center justify-between pb-4 mb-4 border-b">
+                    <h2 className="text-lg font-medium">Menu</h2>
+                    <SheetTrigger asChild>
+                      <Button variant="ghost" size="icon" aria-label="Fechar menu">
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </SheetTrigger>
+                  </div>
+                  
+                  <form onSubmit={handleSearch} className="mb-6">
+                    <div className="flex gap-2">
+                      <Input
+                        type="search"
+                        placeholder="Pesquisar..."
+                        className="flex-1"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                      <Button type="submit" size="icon" aria-label="Buscar">
+                        <Search className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </form>
+                  
+                  <nav className="flex flex-col space-y-4">
+                    <Link 
+                      to="/" 
+                      className="text-lg font-medium"
+                    >
+                      Início
+                    </Link>
+                    {categories.map(category => (
+                      <Link 
+                        key={category.id}
+                        to={`/categoria/${category.slug}`}
+                        className="text-lg font-medium"
+                      >
+                        {category.name}
+                      </Link>
+                    ))}
+                  </nav>
+                </div>
+              </SheetContent>
+            </Sheet>
+          )}
         </div>
       </div>
-      
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="fixed inset-0 bg-white z-50 animate-fade-in">
-          <div className="container px-4 py-5 mx-auto flex justify-between items-center">
-            <Link 
-              to="/" 
-              className="text-2xl font-serif font-medium tracking-tight"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Se A Moda Pega
-            </Link>
-            
-            <button 
-              onClick={() => setIsMenuOpen(false)}
-              className="hover:text-fashion-secondary transition-colors"
-              aria-label="Fechar"
-            >
-              <X size={24} />
-            </button>
-          </div>
-          
-          <nav className="container px-4 py-8 mx-auto">
-            <ul className="space-y-6">
-              <li>
-                <Link 
-                  to="/" 
-                  className="text-xl font-medium hover:text-fashion-secondary transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Home
-                </Link>
-              </li>
-              
-              {categories.map(category => (
-                <li key={category.id}>
-                  <Link
-                    to={`/categoria/${category.slug}`}
-                    className="text-xl font-medium hover:text-fashion-secondary transition-colors"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {category.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
-      )}
-      
-      {/* Search Overlay */}
-      {isSearchOpen && (
-        <div className="fixed inset-0 bg-white z-50 flex items-center justify-center animate-fade-in">
-          <div className="container px-4 mx-auto">
-            <div className="flex justify-end mb-8">
-              <button 
-                onClick={() => setIsSearchOpen(false)}
-                className="hover:text-fashion-secondary transition-colors"
-                aria-label="Fechar"
-              >
-                <X size={24} />
-              </button>
-            </div>
-            
-            <form onSubmit={handleSearch} className="max-w-xl mx-auto">
-              <div className="flex flex-col items-center">
-                <h2 className="text-xl md:text-2xl font-medium mb-6">O que você está procurando?</h2>
-                
-                <div className="relative w-full">
-                  <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
-                    placeholder="Digite para pesquisar..."
-                    className="w-full py-3 px-4 border-b border-fashion-lightGray bg-transparent focus:outline-none focus:border-fashion-primary"
-                    autoFocus
-                  />
-                  <button 
-                    type="submit"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 hover:text-fashion-secondary transition-colors"
-                    aria-label="Pesquisar"
-                  >
-                    <Search size={20} />
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </header>
   );
 };

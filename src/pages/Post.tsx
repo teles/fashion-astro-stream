@@ -6,6 +6,7 @@ import { fetchSinglePost, fetchPosts } from '../services/api';
 import { WpPost, WpCategory } from '../types';
 import PostCard from '../components/PostCard';
 import CategoryChip from '../components/CategoryChip';
+import SocialShare from '@/components/SocialShare';
 import SEO from '@/components/SEO';
 import SchemaMarkup from '@/components/SchemaMarkup';
 import { decodeHtmlEntities, stripHtmlTags } from '@/lib/utils';
@@ -42,16 +43,16 @@ const Post = () => {
     return (
       <div className="page-container">
         <div className="animate-pulse space-y-4 max-w-4xl mx-auto">
-          <div className="h-8 bg-fashion-lightGray rounded w-3/4 mx-auto mb-8" />
-          <div className="h-4 bg-fashion-lightGray rounded w-1/4 mx-auto mb-12" />
-          <div className="h-96 bg-fashion-lightGray rounded mb-12" />
+          <div className="h-8 bg-fashion-lightGray rounded w-3/4 mx-auto mb-8 dark:bg-fashion-secondary/30" />
+          <div className="h-4 bg-fashion-lightGray rounded w-1/4 mx-auto mb-12 dark:bg-fashion-secondary/30" />
+          <div className="h-96 bg-fashion-lightGray rounded mb-12 dark:bg-fashion-secondary/30" />
           <div className="space-y-4 max-w-3xl mx-auto">
-            <div className="h-4 bg-fashion-lightGray rounded" />
-            <div className="h-4 bg-fashion-lightGray rounded" />
-            <div className="h-4 bg-fashion-lightGray rounded w-4/5" />
-            <div className="h-12 bg-fashion-lightGray rounded mt-8" />
-            <div className="h-4 bg-fashion-lightGray rounded" />
-            <div className="h-4 bg-fashion-lightGray rounded" />
+            <div className="h-4 bg-fashion-lightGray rounded dark:bg-fashion-secondary/30" />
+            <div className="h-4 bg-fashion-lightGray rounded dark:bg-fashion-secondary/30" />
+            <div className="h-4 bg-fashion-lightGray rounded w-4/5 dark:bg-fashion-secondary/30" />
+            <div className="h-12 bg-fashion-lightGray rounded mt-8 dark:bg-fashion-secondary/30" />
+            <div className="h-4 bg-fashion-lightGray rounded dark:bg-fashion-secondary/30" />
+            <div className="h-4 bg-fashion-lightGray rounded dark:bg-fashion-secondary/30" />
           </div>
         </div>
       </div>
@@ -109,6 +110,12 @@ const Post = () => {
                 day: 'numeric'
               })}
             </time>
+            
+            <SocialShare 
+              url={fullUrl}
+              title={postTitle}
+              className="mt-4 justify-center"
+            />
           </header>
           
           {imageUrl && (
@@ -117,7 +124,8 @@ const Post = () => {
                 src={imageUrl} 
                 alt={postTitle}
                 className="w-full max-h-[70vh] object-cover"
-                loading="eager"
+                loading="lazy"
+                decoding="async"
                 itemProp="image"
               />
             </figure>
@@ -125,7 +133,7 @@ const Post = () => {
           
           <div className="page-container max-w-3xl">
             <div 
-              className="post-content prose prose-lg prose-fashion"
+              className="post-content prose prose-lg prose-fashion dark:prose-invert"
               dangerouslySetInnerHTML={{ __html: post.content.rendered }}
               itemProp="articleBody"
             />

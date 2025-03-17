@@ -75,7 +75,7 @@
   }
 
   body {
-    @apply bg-fashion-cream text-fashion-primary font-sans antialiased;
+    @apply bg-fashion-cream text-fashion-primary font-sans antialiased dark:bg-gray-900 dark:text-gray-50;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -99,11 +99,16 @@
   }
   
   p {
-    @apply leading-relaxed text-fashion-secondary;
+    @apply leading-relaxed text-fashion-secondary dark:text-gray-300;
   }
 
   img {
     @apply max-w-full h-auto;
+  }
+  
+  /* Accessible focus styles */
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
   }
 }
 
@@ -137,7 +142,7 @@
   }
   
   .post-content ul, .post-content ol {
-    @apply my-4 ml-5 text-fashion-secondary;
+    @apply my-4 ml-5 text-fashion-secondary dark:text-gray-300;
   }
   
   .post-content li {
@@ -145,12 +150,12 @@
   }
   
   .post-content a {
-    @apply text-fashion-primary underline decoration-1 underline-offset-2 hover:decoration-2 transition-all;
+    @apply text-fashion-primary underline decoration-1 underline-offset-2 hover:decoration-2 transition-all dark:text-gray-200;
   }
   
   /* Recipe styling */
   .post-content .wp-block-group {
-    @apply my-8 p-6 bg-fashion-beige rounded-lg shadow-sm border border-fashion-sand;
+    @apply my-8 p-6 bg-fashion-beige rounded-lg shadow-sm border border-fashion-sand dark:bg-gray-800 dark:border-gray-700;
   }
   
   .post-content .ingredients-list,
@@ -170,7 +175,7 @@
   .post-content .wp-block-heading + ul,
   .post-content h3 + ul,
   .post-content h4 + ul {
-    @apply bg-fashion-cream p-5 rounded-md border border-fashion-sand;
+    @apply bg-fashion-cream p-5 rounded-md border border-fashion-sand dark:bg-gray-800 dark:border-gray-700;
   }
   
   .post-content .wp-block-embed,
@@ -183,11 +188,11 @@
   }
   
   .post-content blockquote {
-    @apply pl-4 border-l-4 border-fashion-primary/30 italic my-6 py-2;
+    @apply pl-4 border-l-4 border-fashion-primary/30 italic my-6 py-2 dark:border-gray-400;
   }
   
   .post-content .recipe-time {
-    @apply bg-fashion-cream p-3 rounded-md inline-flex items-center gap-2 text-sm font-medium mb-4;
+    @apply bg-fashion-cream p-3 rounded-md inline-flex items-center gap-2 text-sm font-medium mb-4 dark:bg-gray-800;
   }
   
   .post-content .recipe-instructions ol {
@@ -199,7 +204,7 @@
   }
   
   .category-chip {
-    @apply inline-block text-xs uppercase tracking-wide px-3 py-1 rounded-full border border-fashion-lightGray bg-white text-fashion-secondary font-medium transition-all hover:bg-fashion-accent;
+    @apply inline-block text-xs uppercase tracking-wide px-3 py-1 rounded-full border border-fashion-lightGray bg-white text-fashion-secondary font-medium transition-all hover:bg-fashion-accent dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700;
   }
   
   .image-hover-zoom {

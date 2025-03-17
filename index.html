@@ -1,12 +1,13 @@
 
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Se A Moda Pega - Blog de Moda e Tendências</title>
     <meta name="description" content="Seu portal sobre moda, tendências, beleza e estilo. Dicas, novidades e inspirações para você se manter sempre na moda." />
     <meta name="author" content="Se A Moda Pega" />
+    <meta name="theme-color" content="#f9f5f0" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -24,9 +25,16 @@
     
     <!-- Favicon -->
     <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     
     <!-- Canonical URL -->
     <link rel="canonical" href="https://seamodapega.com.br/" />
+    
+    <!-- PWA Support -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Se A Moda Pega" />
   </head>
 
   <body>
@@ -34,5 +42,18 @@
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+              console.log('SW registered: ', registration);
+            })
+            .catch(registrationError => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
   </body>
 </html>
