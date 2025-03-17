@@ -1,15 +1,10 @@
 
 import { Link } from 'react-router-dom';
-import { WpPost, WpCategory } from '../types';
-import { formatDate, getPostImage, getExcerpt } from '../services/api';
+import { WpPost, WpCategory } from '@/types';
+import { formatDate } from '@/lib/utils';
+import { getPostImage, getPostExcerpt } from '@/lib/api-utils';
 import CategoryChip from './CategoryChip';
-
-// Function to decode HTML entities
-const decodeHtmlEntities = (text: string) => {
-  const textArea = document.createElement('textarea');
-  textArea.innerHTML = text;
-  return textArea.value;
-};
+import { decodeHtmlEntities } from '@/lib/utils';
 
 interface PostCardProps {
   post: WpPost;
@@ -22,6 +17,8 @@ const PostCard = ({ post, categories, variant = 'normal', className = '' }: Post
   const imageUrl = getPostImage(post, variant === 'small' ? 'medium' : 'large');
   const postCategories = post._embedded?.['wp:term']?.[0] as WpCategory[] | undefined;
   const primaryCategory = postCategories?.[0] || categories?.find(c => post.categories.includes(c.id));
+  const postTitle = decodeHtmlEntities(post.title.rendered);
+  const excerpt = getPostExcerpt(post);
   
   if (variant === 'small') {
     return (
@@ -30,7 +27,7 @@ const PostCard = ({ post, categories, variant = 'normal', className = '' }: Post
           <div className="image-hover-zoom mb-3">
             <img 
               src={imageUrl} 
-              alt={decodeHtmlEntities(post.title.rendered)} 
+              alt={postTitle} 
               className="aspect-square object-cover w-full"
               loading="lazy"
             />
@@ -48,7 +45,7 @@ const PostCard = ({ post, categories, variant = 'normal', className = '' }: Post
         <Link to={`/post/${post.slug}`} className="block image-hover-zoom">
           <img 
             src={imageUrl} 
-            alt={decodeHtmlEntities(post.title.rendered)} 
+            alt={postTitle} 
             className="aspect-[4/3] md:aspect-square object-cover w-full h-full"
             loading="lazy"
           />
@@ -60,7 +57,7 @@ const PostCard = ({ post, categories, variant = 'normal', className = '' }: Post
           <Link to={`/post/${post.slug}`}>
             <h3 className="mb-3 text-balance" dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
           </Link>
-          <p className="mb-3 line-clamp-3">{getExcerpt(post)}</p>
+          <p className="mb-3 line-clamp-3">{excerpt}</p>
           <time className="text-sm text-fashion-secondary mt-auto">{formatDate(post.date)}</time>
         </div>
       </article>
@@ -74,7 +71,7 @@ const PostCard = ({ post, categories, variant = 'normal', className = '' }: Post
         <div className="image-hover-zoom mb-4">
           <img 
             src={imageUrl} 
-            alt={decodeHtmlEntities(post.title.rendered)} 
+            alt={postTitle} 
             className="aspect-[4/3] object-cover w-full"
             loading="lazy"
           />
@@ -85,7 +82,7 @@ const PostCard = ({ post, categories, variant = 'normal', className = '' }: Post
         )}
         
         <h3 className="mb-2 text-balance" dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
-        <p className="mb-3 line-clamp-2">{getExcerpt(post)}</p>
+        <p className="mb-3 line-clamp-2">{excerpt}</p>
         <time className="text-sm text-fashion-secondary">{formatDate(post.date)}</time>
       </Link>
     </article>

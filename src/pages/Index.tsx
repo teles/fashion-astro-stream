@@ -1,78 +1,34 @@
 
 import { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { fetchPosts } from '../services/api';
-import { WpPost } from '../types';
+import { useFeaturedPost, useRecentPosts } from '../hooks/use-post';
 import FeaturedPost from '../components/FeaturedPost';
 import PostCard from '../components/PostCard';
 import { 
   Pagination, 
   PaginationContent, 
-  PaginationEllipsis, 
   PaginationItem, 
-  PaginationLink, 
   PaginationNext, 
   PaginationPrevious 
 } from '@/components/ui/pagination';
-import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
+import { PaginationLinks } from '@/components/ui/pagination-links';
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 6;
 
-  const { data: featuredData } = useQuery({
-    queryKey: ['posts', 'featured'],
-    queryFn: () => fetchPosts({ perPage: 1 }),
-  });
-
-  const { data: recentData, isLoading } = useQuery({
-    queryKey: ['posts', 'recent', currentPage],
-    queryFn: () => fetchPosts({ perPage: postsPerPage, page: currentPage }),
-  });
-
-  const featuredPost = featuredData?.posts[0];
-  const recentPosts = recentData?.posts.filter(post => post.id !== featuredPost?.id) || [];
-  const totalPages = recentData?.pagination.totalPages || 1;
+  const { data: featuredPost } = useFeaturedPost();
+  const { posts: recentPosts, pagination, isLoading } = useRecentPosts(
+    currentPage, 
+    postsPerPage, 
+    featuredPost?.id
+  );
+  
+  const totalPages = pagination.totalPages || 1;
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [currentPage]);
-
-  // Generate pagination links
-  const generatePaginationLinks = () => {
-    const pages = [];
-    const maxVisiblePages = 5;
-    
-    if (totalPages <= maxVisiblePages) {
-      // Show all pages if total is less than maxVisiblePages
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      // Always show first and last, and some pages around current
-      pages.push(1);
-      
-      if (currentPage > 3) {
-        pages.push('ellipsis-start');
-      }
-      
-      const start = Math.max(2, currentPage - 1);
-      const end = Math.min(totalPages - 1, currentPage + 1);
-      
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
-      
-      if (currentPage < totalPages - 2) {
-        pages.push('ellipsis-end');
-      }
-      
-      pages.push(totalPages);
-    }
-    
-    return pages;
-  };
   
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -110,23 +66,11 @@ const Index = () => {
                       />
                     </PaginationItem>
                     
-                    {generatePaginationLinks().map((page, i) => (
-                      typeof page === 'number' ? (
-                        <PaginationItem key={`page-${page}`}>
-                          <PaginationLink 
-                            isActive={page === currentPage}
-                            onClick={() => handlePageChange(page)}
-                            className="cursor-pointer"
-                          >
-                            {page}
-                          </PaginationLink>
-                        </PaginationItem>
-                      ) : (
-                        <PaginationItem key={`ellipsis-${i}`}>
-                          <PaginationEllipsis />
-                        </PaginationItem>
-                      )
-                    ))}
+                    <PaginationLinks 
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={handlePageChange}
+                    />
                     
                     <PaginationItem>
                       <PaginationNext 

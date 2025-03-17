@@ -1,15 +1,9 @@
 
 import { Link } from 'react-router-dom';
-import { WpPost, WpCategory } from '../types';
-import { formatDate, getPostImage, getExcerpt } from '../services/api';
+import { WpPost, WpCategory } from '@/types';
+import { formatDate, decodeHtmlEntities } from '@/lib/utils';
+import { getPostImage, getPostExcerpt } from '@/lib/api-utils';
 import CategoryChip from './CategoryChip';
-
-// Function to decode HTML entities
-const decodeHtmlEntities = (text: string) => {
-  const textArea = document.createElement('textarea');
-  textArea.innerHTML = text;
-  return textArea.value;
-};
 
 interface FeaturedPostProps {
   post: WpPost;
@@ -20,13 +14,15 @@ const FeaturedPost = ({ post, className = '' }: FeaturedPostProps) => {
   const imageUrl = getPostImage(post, 'large');
   const postCategories = post._embedded?.['wp:term']?.[0] as WpCategory[] | undefined;
   const primaryCategory = postCategories?.[0];
+  const postTitle = decodeHtmlEntities(post.title.rendered);
+  const excerpt = getPostExcerpt(post);
   
   return (
     <article className={`group relative ${className}`}>
       <div className="relative after:absolute after:inset-0 after:bg-gradient-to-t after:from-black/60 after:to-transparent">
         <img 
           src={imageUrl} 
-          alt={decodeHtmlEntities(post.title.rendered)} 
+          alt={postTitle} 
           className="w-full h-[70vh] object-cover animate-image-scale"
         />
       </div>
@@ -41,7 +37,7 @@ const FeaturedPost = ({ post, className = '' }: FeaturedPostProps) => {
         
         <Link to={`/post/${post.slug}`}>
           <h2 className="text-white mb-3 text-balance" dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
-          <p className="text-white/90 mb-3 max-w-2xl line-clamp-2">{getExcerpt(post)}</p>
+          <p className="text-white/90 mb-3 max-w-2xl line-clamp-2">{excerpt}</p>
           <time className="text-sm text-white/80">{formatDate(post.date)}</time>
         </Link>
       </div>
