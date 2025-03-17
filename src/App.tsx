@@ -37,7 +37,7 @@ const App = () => (
               <Navbar />
               <Routes>
                 <Route path="/" element={<Index />} />
-                <Route path="/post/:slug" element={<Post />} />
+                <Route path="/:slug" element={<Post />} />
                 <Route path="/categoria/:slug" element={<Category />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="*" element={<NotFound />} />

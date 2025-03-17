@@ -38,13 +38,6 @@ const Post = () => {
     window.scrollTo(0, 0);
   }, [slug]);
   
-  // Function to decode HTML entities
-  const decodeHtmlEntities = (text: string) => {
-    const textArea = document.createElement('textarea');
-    textArea.innerHTML = text;
-    return textArea.value;
-  };
-  
   if (isLoading) {
     return (
       <div className="page-container">

@@ -22,7 +22,7 @@ const Footer = () => {
         <div className="grid md:grid-cols-3 gap-8 md:gap-12">
           <div>
             <Link to="/" className="text-2xl font-serif font-medium tracking-tight">
-              Moda Astro
+              Se A Moda Pega
             </Link>
             <p className="mt-4 text-fashion-secondary">
               Blog de moda com as últimas tendências, dicas de estilo e novidades do mundo fashion.
@@ -69,7 +69,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-fashion-sand mt-8 pt-8 text-center text-sm text-fashion-secondary">
-          <p>&copy; {new Date().getFullYear()} Moda Astro. Todos os direitos reservados.</p>
+          <p>&copy; {new Date().getFullYear()} Se A Moda Pega. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>

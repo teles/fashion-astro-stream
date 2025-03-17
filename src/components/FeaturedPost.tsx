@@ -35,7 +35,7 @@ const FeaturedPost = ({ post, className = '' }: FeaturedPostProps) => {
           />
         )}
         
-        <Link to={`/post/${post.slug}`}>
+        <Link to={`/${post.slug}`}>
           <h2 className="text-white mb-3 text-balance" dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
           <p className="text-white/90 mb-3 max-w-2xl line-clamp-2">{excerpt}</p>
           <time className="text-sm text-white/80">{formatDate(post.date)}</time>

@@ -24,7 +24,7 @@ export async function generateSitemap() {
     posts.forEach(post => {
       sitemap += `
   <url>
-    <loc>${baseUrl}/post/${post.slug}</loc>
+    <loc>${baseUrl}/${post.slug}</loc>
     <lastmod>${new Date(post.modified).toISOString()}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

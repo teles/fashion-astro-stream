@@ -133,7 +133,7 @@
   }
   
   .post-content h2, .post-content h3, .post-content h4 {
-    @apply mt-8 mb-4;
+    @apply mt-8 mb-4 font-medium;
   }
   
   .post-content ul, .post-content ol {
@@ -150,21 +150,27 @@
   
   /* Recipe styling */
   .post-content .wp-block-group {
-    @apply my-8 p-6 bg-fashion-beige rounded-md shadow-sm;
+    @apply my-8 p-6 bg-fashion-beige rounded-lg shadow-sm border border-fashion-sand;
   }
   
-  .post-content .ingredients-list {
-    @apply my-4 pl-5;
+  .post-content .ingredients-list,
+  .post-content .wp-block-group ul {
+    @apply my-4 pl-5 space-y-2;
   }
   
-  .post-content .ingredients-list li {
+  .post-content .ingredients-list li,
+  .post-content .wp-block-group ul li {
     @apply list-disc my-2;
+  }
+  
+  .post-content .wp-block-heading {
+    @apply font-serif;
   }
   
   .post-content .wp-block-heading + ul,
   .post-content h3 + ul,
   .post-content h4 + ul {
-    @apply bg-fashion-cream p-4 rounded-md border border-fashion-sand;
+    @apply bg-fashion-cream p-5 rounded-md border border-fashion-sand;
   }
   
   .post-content .wp-block-embed,
@@ -177,7 +183,19 @@
   }
   
   .post-content blockquote {
-    @apply pl-4 border-l-4 border-fashion-primary/30 italic my-6;
+    @apply pl-4 border-l-4 border-fashion-primary/30 italic my-6 py-2;
+  }
+  
+  .post-content .recipe-time {
+    @apply bg-fashion-cream p-3 rounded-md inline-flex items-center gap-2 text-sm font-medium mb-4;
+  }
+  
+  .post-content .recipe-instructions ol {
+    @apply list-decimal pl-5 space-y-4 my-6;
+  }
+  
+  .post-content .recipe-instructions li {
+    @apply pl-2;
   }
   
   .category-chip {

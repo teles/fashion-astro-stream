@@ -55,7 +55,7 @@ const Navbar = () => {
           to="/" 
           className="text-2xl font-serif font-medium tracking-tight hover:opacity-80 transition-opacity"
         >
-          Moda Astro
+          Se A Moda Pega
         </Link>
         
         <nav className="hidden md:flex items-center space-x-6">
@@ -110,7 +110,7 @@ const Navbar = () => {
               className="text-2xl font-serif font-medium tracking-tight"
               onClick={() => setIsMenuOpen(false)}
             >
-              Moda Astro
+              Se A Moda Pega
             </Link>
             
             <button 
