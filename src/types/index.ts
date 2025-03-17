@@ -1,7 +1,7 @@
-
 export interface WpPost {
   id: number;
   date: string;
+  modified: string; // Add modified date property
   slug: string;
   title: {
     rendered: string;
@@ -28,6 +28,9 @@ export interface WpPost {
       };
     }>;
     'wp:term'?: Array<Array<WpTerm>>;
+    'author'?: Array<{
+      name: string;
+    }>;
   };
   categories: number[];
   tags: number[];
