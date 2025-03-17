@@ -1,14 +1,20 @@
 
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { fetchSinglePost, fetchPosts, formatDate, getPostImage } from '../services/api';
+import { fetchSinglePost, fetchPosts } from '../services/api';
 import { WpPost, WpCategory } from '../types';
 import PostCard from '../components/PostCard';
 import CategoryChip from '../components/CategoryChip';
+import SEO from '@/components/SEO';
+import SchemaMarkup from '@/components/SchemaMarkup';
+import { decodeHtmlEntities, stripHtmlTags } from '@/lib/utils';
+import { getPostImage } from '@/lib/api-utils';
 
 const Post = () => {
   const { slug } = useParams<{ slug: string }>();
+  const location = useLocation();
+  const fullUrl = `https://seamodapega.com.br${location.pathname}`;
   
   const { data: post, isLoading } = useQuery({
     queryKey: ['post', slug],
@@ -69,56 +75,83 @@ const Post = () => {
   }
   
   const postTitle = decodeHtmlEntities(post.title.rendered);
+  const postDescription = stripHtmlTags(post.excerpt.rendered);
+  const categoryNames = postCategories?.map(cat => cat.name) || [];
   
   return (
-    <main className="min-h-screen">
-      <article>
-        <header className="page-container max-w-4xl text-center">
-          {postCategories && postCategories.length > 0 && (
-            <div className="flex gap-2 justify-center mb-4">
-              {postCategories.map(category => (
-                <CategoryChip key={category.id} category={category} />
-              ))}
-            </div>
+    <>
+      <SEO 
+        title={postTitle}
+        description={postDescription}
+        image={imageUrl}
+        article={true}
+        publishedTime={post.date}
+        modifiedTime={post.modified}
+        categories={categoryNames}
+      />
+      <SchemaMarkup post={post} url={fullUrl} />
+      
+      <main className="min-h-screen">
+        <article itemScope itemType="https://schema.org/BlogPosting">
+          <meta itemProp="mainEntityOfPage" content={fullUrl} />
+          <meta itemProp="datePublished" content={post.date} />
+          <meta itemProp="dateModified" content={post.modified} />
+          <meta itemProp="author" content="Se A Moda Pega" />
+          
+          <header className="page-container max-w-4xl text-center">
+            {postCategories && postCategories.length > 0 && (
+              <div className="flex gap-2 justify-center mb-4">
+                {postCategories.map(category => (
+                  <CategoryChip key={category.id} category={category} />
+                ))}
+              </div>
+            )}
+            
+            <h1 className="mb-4" dangerouslySetInnerHTML={{ __html: post.title.rendered }} itemProp="headline" />
+            
+            <time className="text-fashion-secondary" dateTime={post.date}>
+              {new Date(post.date).toLocaleDateString('pt-BR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </time>
+          </header>
+          
+          {imageUrl && (
+            <figure className="mt-8 mb-12">
+              <img 
+                src={imageUrl} 
+                alt={postTitle}
+                className="w-full max-h-[70vh] object-cover"
+                loading="eager"
+                itemProp="image"
+              />
+            </figure>
           )}
           
-          <h1 className="mb-4" dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
-          
-          <time className="text-fashion-secondary">
-            {formatDate(post.date)}
-          </time>
-        </header>
-        
-        {imageUrl && (
-          <figure className="mt-8 mb-12">
-            <img 
-              src={imageUrl} 
-              alt={postTitle}
-              className="w-full max-h-[70vh] object-cover"
+          <div className="page-container max-w-3xl">
+            <div 
+              className="post-content prose prose-lg prose-fashion"
+              dangerouslySetInnerHTML={{ __html: post.content.rendered }}
+              itemProp="articleBody"
             />
-          </figure>
-        )}
-        
-        <div className="page-container max-w-3xl">
-          <div 
-            className="post-content prose prose-lg prose-fashion"
-            dangerouslySetInnerHTML={{ __html: post.content.rendered }}
-          />
-        </div>
-      </article>
-      
-      {relatedPosts.length > 0 && (
-        <section className="page-container max-w-6xl mt-12 md:mt-16">
-          <h2 className="text-center mb-8">Posts Relacionados</h2>
-          
-          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
-            {relatedPosts.map(post => (
-              <PostCard key={post.id} post={post} variant="small" />
-            ))}
           </div>
-        </section>
-      )}
-    </main>
+        </article>
+        
+        {relatedPosts.length > 0 && (
+          <section className="page-container max-w-6xl mt-12 md:mt-16">
+            <h2 className="text-center mb-8">Posts Relacionados</h2>
+            
+            <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+              {relatedPosts.map(post => (
+                <PostCard key={post.id} post={post} variant="small" />
+              ))}
+            </div>
+          </section>
+        )}
+      </main>
+    </>
   );
 };
 

@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/pagination';
 import { Loader2 } from 'lucide-react';
 import { PaginationLinks } from '@/components/ui/pagination-links';
+import SEO from '@/components/SEO';
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,57 +36,62 @@ const Index = () => {
   };
 
   return (
-    <main className="min-h-screen flex flex-col">
-      {featuredPost && (
-        <FeaturedPost post={featuredPost} />
-      )}
-      
-      <section className="page-container">
-        <h2 className="text-center mb-8">Últimos Posts</h2>
-        
-        {isLoading ? (
-          <div className="flex justify-center items-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-fashion-primary/50" />
-          </div>
-        ) : (
-          <>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              {recentPosts.map(post => (
-                <PostCard key={post.id} post={post} />
-              ))}
-            </div>
-            
-            {totalPages > 1 && (
-              <div className="mt-10">
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious 
-                        onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
-                        className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                      />
-                    </PaginationItem>
-                    
-                    <PaginationLinks 
-                      currentPage={currentPage}
-                      totalPages={totalPages}
-                      onPageChange={handlePageChange}
-                    />
-                    
-                    <PaginationItem>
-                      <PaginationNext 
-                        onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
-                        className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              </div>
-            )}
-          </>
+    <>
+      <SEO />
+      <main className="min-h-screen flex flex-col">
+        {featuredPost && (
+          <FeaturedPost post={featuredPost} />
         )}
-      </section>
-    </main>
+        
+        <section className="page-container">
+          <h2 className="text-center mb-8">Últimos Posts</h2>
+          
+          {isLoading ? (
+            <div className="flex justify-center items-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-fashion-primary/50" />
+            </div>
+          ) : (
+            <>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                {recentPosts.map(post => (
+                  <PostCard key={post.id} post={post} />
+                ))}
+              </div>
+              
+              {totalPages > 1 && (
+                <div className="mt-10">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious 
+                          onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
+                          className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                          aria-label="Ir para a página anterior"
+                        />
+                      </PaginationItem>
+                      
+                      <PaginationLinks 
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                      />
+                      
+                      <PaginationItem>
+                        <PaginationNext 
+                          onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
+                          className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                          aria-label="Ir para a próxima página"
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              )}
+            </>
+          )}
+        </section>
+      </main>
+    </>
   );
 };
 
