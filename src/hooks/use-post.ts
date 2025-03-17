@@ -52,3 +52,32 @@ export function useRelatedPosts(postCategories: number[] = [], excludePostId?: n
   
   return { posts, isLoading };
 }
+
+export function usePostImages(post: WpPost | undefined) {
+  const extractImagesFromContent = (content: string) => {
+    if (!content) return [];
+    
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = content;
+    
+    const imgElements = tempDiv.querySelectorAll('img');
+    const images: Array<{src: string; alt: string; caption?: string}> = [];
+    
+    imgElements.forEach((img) => {
+      const figcaption = img.closest('figure')?.querySelector('figcaption');
+      
+      images.push({
+        src: img.src,
+        alt: img.alt || 'Imagem do post',
+        caption: figcaption ? figcaption.textContent || undefined : undefined
+      });
+    });
+    
+    return images;
+  };
+  
+  if (!post) return { images: [] };
+  
+  const images = extractImagesFromContent(post.content.rendered);
+  return { images };
+}

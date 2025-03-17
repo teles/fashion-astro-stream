@@ -1,5 +1,5 @@
 
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchSinglePost, fetchPosts } from '../services/api';
@@ -11,11 +11,22 @@ import SEO from '@/components/SEO';
 import SchemaMarkup from '@/components/SchemaMarkup';
 import { decodeHtmlEntities, stripHtmlTags } from '@/lib/utils';
 import { getPostImage } from '@/lib/api-utils';
+import ImageModal from '@/components/ImageModal';
+
+interface ImageInfo {
+  src: string;
+  alt: string;
+  caption?: string;
+}
 
 const Post = () => {
   const { slug } = useParams<{ slug: string }>();
   const location = useLocation();
   const fullUrl = `https://seamodapega.com.br${location.pathname}`;
+  
+  const [modalOpen, setModalOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [postImages, setPostImages] = useState<ImageInfo[]>([]);
   
   const { data: post, isLoading } = useQuery({
     queryKey: ['post', slug],
@@ -34,6 +45,78 @@ const Post = () => {
   const relatedPosts = relatedData?.posts.filter(p => p.id !== post?.id) || [];
   const postCategories = post?._embedded?.['wp:term']?.[0] as WpCategory[] | undefined;
   const imageUrl = post ? getPostImage(post, 'full') : '';
+  
+  // Função para extrair todas as imagens do conteúdo do post
+  const extractImagesFromContent = useCallback((content: string) => {
+    if (!content) return [];
+    
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = content;
+    
+    const imgElements = tempDiv.querySelectorAll('img');
+    const images: ImageInfo[] = [];
+    
+    imgElements.forEach((img) => {
+      const figcaption = img.closest('figure')?.querySelector('figcaption');
+      
+      images.push({
+        src: img.src,
+        alt: img.alt || 'Imagem do post',
+        caption: figcaption ? figcaption.textContent || undefined : undefined
+      });
+    });
+    
+    // Adiciona a imagem destacada do post se existir
+    if (imageUrl) {
+      // Verifica se a imagem já foi adicionada (para evitar duplicatas)
+      const imageExists = images.some(img => img.src === imageUrl);
+      
+      if (!imageExists) {
+        images.unshift({
+          src: imageUrl,
+          alt: decodeHtmlEntities(post?.title.rendered || ''),
+          caption: 'Imagem destacada'
+        });
+      }
+    }
+    
+    return images;
+  }, [imageUrl, post]);
+  
+  // Extrair imagens quando o post carrega
+  useEffect(() => {
+    if (post && post.content.rendered) {
+      const extractedImages = extractImagesFromContent(post.content.rendered);
+      setPostImages(extractedImages);
+    }
+  }, [post, extractImagesFromContent]);
+  
+  // Adicionar tratamento de clique nas imagens do post
+  useEffect(() => {
+    if (!post) return;
+    
+    const handleImageClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      
+      if (target.tagName === 'IMG' && target.closest('.post-content')) {
+        e.preventDefault();
+        
+        const clickedSrc = (target as HTMLImageElement).src;
+        const imageIndex = postImages.findIndex(img => img.src === clickedSrc);
+        
+        if (imageIndex !== -1) {
+          setCurrentImageIndex(imageIndex);
+          setModalOpen(true);
+        }
+      }
+    };
+    
+    document.addEventListener('click', handleImageClick);
+    
+    return () => {
+      document.removeEventListener('click', handleImageClick);
+    };
+  }, [post, postImages]);
   
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -119,7 +202,10 @@ const Post = () => {
           </header>
           
           {imageUrl && (
-            <figure className="mt-8 mb-12">
+            <figure className="mt-8 mb-12 cursor-pointer" onClick={() => {
+              setCurrentImageIndex(0);
+              setModalOpen(true);
+            }}>
               <img 
                 src={imageUrl} 
                 alt={postTitle}
@@ -152,6 +238,14 @@ const Post = () => {
           </section>
         )}
       </main>
+      
+      {/* Modal de imagens */}
+      <ImageModal 
+        images={postImages}
+        initialIndex={currentImageIndex}
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+      />
     </>
   );
 };
